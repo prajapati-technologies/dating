@@ -66,4 +66,26 @@ class UserController extends Controller
         $user = User::with('profile')->findOrFail($id);
         return view('admin.users.view', compact('user'));
     }
+
+    /**
+     * Edit user profile
+     */
+    public function edit($id)
+    {
+        $user = User::with('profile')->findOrFail($id);
+        return view('admin.users.edit', compact('user'));
+    }
+    /**
+     * Update user profile
+     */
+    public function update(Request $request, $id)
+    {
+        $user = User::with('profile')->findOrFail($id);
+        $data = $request->all();
+        $user->update($data);
+        if ($user->profile) {
+            $user->profile->update($data);
+        }
+        return back()->with('success', 'User updated successfully.');
+    }
 }

@@ -1,7 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
-
+     @if(session('success'))
+        <div class="bg-green-100 text-green-700 p-4 rounded-xl mb-6 text-center font-semibold border border-green-300">
+            {{ session('success') }}
+        </div>
+    @endif
     <div class="min-h-screen bg-gradient-to-br from-pink-500 to-purple-600 py-10 flex justify-center px-4">
         
         <div class="w-full max-w-[750px] bg-white shadow-2xl rounded-3xl p-8">
@@ -16,31 +20,23 @@
             </p>
 
             <!-- Profile Photo -->
-            <div class="flex flex-col items-center mb-8">
-                @if(!empty($profile->profile_photo))
-                    <img src="{{ asset('storage/' . $profile->profile_photo) }}"
-                         class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-xl" />
-                @else
-                    <div class="w-32 h-32 rounded-full bg-pink-200 flex items-center justify-center text-pink-700 text-4xl font-bold">
-                        ?
-                    </div>
-                @endif
-
-                <label class="mt-4 cursor-pointer bg-pink-600 hover:bg-pink-700 text-white py-2 px-6 rounded-full shadow transition font-semibold">
-                    Upload New Photo
-                    <input type="file" name="profile_photo" class="hidden">
-                </label>
-            </div>
-
-            @if(session('success'))
-                <div class="bg-green-100 text-green-700 p-4 rounded-xl mb-6 text-center font-semibold border border-green-300">
-                    {{ session('success') }}
-                </div>
-            @endif
-
             <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data" class="space-y-8">
                 @csrf
+                <div class="flex flex-col items-center mb-8">
+                    @if(!empty($profile->profile_photo))
+                        <img src="{{ asset('storage/' . $profile->profile_photo) }}"
+                            class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-xl" />
+                    @else
+                        <div class="w-32 h-32 rounded-full bg-pink-200 flex items-center justify-center text-pink-700 text-4xl font-bold">
+                            ?
+                        </div>
+                    @endif
 
+                    <label class="mt-4 cursor-pointer bg-pink-600 hover:bg-pink-700 text-white py-2 px-6 rounded-full shadow transition font-semibold">
+                        Upload New Photo
+                        <input type="file" name="profile_photo" class="hidden">
+                    </label>
+                </div>
                 <!-- Basic Info -->
                 <div class="bg-pink-50 p-6 rounded-2xl shadow border border-pink-100">
                     <h2 class="text-lg font-bold text-pink-700 flex items-center mb-4">

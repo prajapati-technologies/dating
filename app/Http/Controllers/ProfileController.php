@@ -25,6 +25,7 @@ class ProfileController extends Controller
 
 public function update(Request $request)
 {
+    // dd($request->all());
     $profile = auth()->user()->profile;
 
     $data = $request->all();

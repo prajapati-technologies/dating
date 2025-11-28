@@ -2,109 +2,72 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Swipe;
 use App\Models\User;
+use App\Models\Swipe;
 use Illuminate\Http\Request;
 
 class SwipeController extends Controller
 {
-    /**
-     * Fetch Next User Card With Filters
-     */
-    public function next(Request $request)
+    public function index()
     {
-        $currentUser = auth()->id();
+        $profile = auth()->user()->profile;
 
-        // Get filters
-        $gender = $request->gender ?? null;
-        $minAge = $request->min_age ?? null;
-        $maxAge = $request->max_age ?? null;
-        $city   = $request->city ?? null;
-
-        // Get already swiped users
-        $swiped = Swipe::where('user_id', $currentUser)->pluck('target_id')->toArray();
-
-        // Start query
-        $query = User::whereNotIn('id', array_merge($swiped, [$currentUser]))
-                     ->with('profile');
-
-        // Gender filter
-        if ($gender) {
-            $query->whereHas('profile', function ($q) use ($gender) {
-                $q->where('gender', $gender);
-            });
+        if (!$profile || !$profile->profile_photo) {
+            return redirect()->route('profile.edit')
+                ->with('error', 'Please complete your profile with a photo to start swiping.');
         }
 
-        // Age filter
-        if ($minAge) {
-            $query->whereHas('profile', function ($q) use ($minAge) {
-                $q->where('age', '>=', $minAge);
-            });
-        }
-        if ($maxAge) {
-            $query->whereHas('profile', function ($q) use ($maxAge) {
-                $q->where('age', '<=', $maxAge);
-            });
-        }
-
-        // City filter
-        if ($city) {
-            $query->whereHas('profile', function ($q) use ($city) {
-                $q->where('city', 'LIKE', "%$city%");
-            });
-        }
-
-        // Fetch one user
-        $user = $query->first();
-
-        return response()->json([
-            'user' => $user
-        ]);
+        return view('swipe.index');
     }
 
-    /**
-     * Handle Like/Dislike Swipe Action
-     */
+
+    public function next()
+{
+    $authId = auth()->id();
+
+    $user = User::with('profile')
+        ->where('id', '!=', $authId)
+        ->whereHas('profile')
+        ->whereDoesntHave('swipesFrom', function ($q) use ($authId) {
+            $q->where('user_id', $authId); // only correct column
+        })
+        ->inRandomOrder()
+        ->first();
+
+    return response()->json(['user' => $user]);
+}
+
+
+
+
     public function swipe(Request $request)
-    {
-        $request->validate([
-            'target_id' => 'required|integer',
-            'type'      => 'required|in:like,dislike'
-        ]);
+{
+    $request->validate([
+        'target_id' => 'required|exists:users,id',
+        'type' => 'required|in:like,dislike'
+    ]);
 
-        $user_id   = auth()->id();
-        $target_id = $request->target_id;
-        $type      = $request->type;
+    $swiper = auth()->id();
+    $target = $request->target_id;
 
-        // Save or update swipe
-        Swipe::updateOrCreate(
-            ['user_id' => $user_id, 'target_id' => $target_id],
-            ['type' => $type]
-        );
+    // Save swipe (YOUR TABLE USES user_id)
+    Swipe::updateOrCreate(
+        ['user_id' => $swiper, 'target_id' => $target], 
+        ['type' => $request->type]
+    );
 
-        // Check match
-        $matched = false;
+    // Check match
+    $match = Swipe::where('user_id', $target)
+                  ->where('target_id', $swiper)
+                  ->where('type', 'like')
+                  ->exists();
 
-        if ($type === 'like') {
-            $matchBack = Swipe::where('user_id', $target_id)
-                              ->where('target_id', $user_id)
-                              ->where('type', 'like')
-                              ->exists();
+    return response()->json([
+        'success' => true,
+        'match' => $match
+    ]);
+}
 
-            if ($matchBack) {
-                $matched = true;
-                \DB::table('matches')->insertOrIgnore([
-                    'user1_id' => min($user_id, $target_id),
-                    'user2_id' => max($user_id, $target_id),
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
-            }
-        }
 
-        return response()->json([
-            'status' => 'success',
-            'match'  => $matched
-        ]);
-    }
+
 }

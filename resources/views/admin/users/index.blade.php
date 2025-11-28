@@ -51,7 +51,8 @@
                             <!-- View -->
                             <a href="{{ route('admin.users.view', $user->id) }}"
                                class="text-blue-600 font-semibold hover:underline">View</a>
-
+                            <a href="{{ route('admin.users.edit', $user->id) }}"
+                               class="text-indigo-600 font-semibold hover:underline">Edit</a>
                             <!-- Block / Unblock -->
                             @if($user->is_blocked)
                                 <form action="{{ route('admin.users.unblock', $user->id) }}" method="POST">

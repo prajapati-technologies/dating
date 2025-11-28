@@ -2,240 +2,283 @@
 
 @section('content')
 
-<!-- FULL SCREEN PINK GRADIENT BACKGROUND -->
-<div class="min-h-screen bg-gradient-to-br from-pink-600 via-pink-500 to-purple-600 flex flex-col items-center py-10 px-4">
+<div class="min-h-screen bg-gradient-to-br from-pink-500 to-purple-600 py-10 flex justify-center">
+    <div class="w-full max-w-lg px-4">
 
-    <!-- CONTAINER -->
-    <div class="w-full max-w-4xl">
+        <h1 class="text-3xl text-white font-bold mb-6 text-center">Discover Profiles</h1>
 
-        <!-- HEADER -->
-        <div class="flex items-center justify-between mb-6">
-            <h1 class="text-3xl text-white font-extrabold">
-                💖 Discover Profiles
-            </h1>
-
-            <div class="flex items-center gap-3">
-                <button id="openFilters"
-                        class="bg-white/20 border border-white/30 text-white px-4 py-2 rounded-xl hover:bg-white/30 transition">
-                    Filters
-                </button>
-
-                <a href="{{ route('dashboard') }}"
-                   class="bg-white text-pink-600 px-4 py-2 rounded-xl font-semibold shadow">
-                    Back
-                </a>
+        <!-- Card Area -->
+        <div id="card-area" class="relative w-full max-w-md h-[520px] mx-auto flex items-center justify-center">
+            <div id="no-more" class="hidden absolute inset-0 flex items-center justify-center text-white text-xl font-bold">
+                No more profiles
             </div>
         </div>
 
-        <!-- SWIPE CARD AREA -->
-        <div id="card-area"
-             class="relative mx-auto w-full max-w-md h-[640px] md:h-[720px]">
+        <!-- Buttons -->
+        <div class="flex justify-center mt-8 gap-10">
 
-            <div id="no-more"
-                 class="hidden absolute inset-0 flex items-center justify-center text-white text-center">
-                <div>
-                    <h2 class="text-3xl font-bold">No More Profiles</h2>
-                    <p class="mt-2 text-lg">Please change filters or try again later.</p>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- ACTION BUTTONS -->
-        <div class="mt-8 flex justify-center gap-6">
-            <button id="undoBtn"
-                    class="bg-white/20 text-white w-14 h-14 rounded-full flex items-center justify-center text-xl shadow-xl hover:bg-white/30">
-                ↺
+            <button id="undoBtn" 
+                class="w-14 h-14 rounded-full bg-yellow-400 text-black text-2xl shadow-xl active:scale-90">
+                ⤺
             </button>
-            <button id="dislikeBtn"
-                    class="bg-red-500 text-white w-20 h-20 rounded-full text-3xl shadow-xl hover:bg-red-600">
+
+            <button id="dislikeBtn" 
+                class="w-16 h-16 rounded-full bg-white shadow-xl border-4 border-red-500 
+                       text-red-500 text-3xl flex items-center justify-center active:scale-90">
                 ✖
             </button>
+
+            <button id="superLikeBtn"
+                class="w-14 h-14 rounded-full bg-blue-500 text-white text-2xl shadow-xl active:scale-90">
+                🔷
+            </button>
+
             <button id="likeBtn"
-                    class="bg-green-500 text-white w-20 h-20 rounded-full text-3xl shadow-xl hover:bg-green-600">
+                class="w-16 h-16 rounded-full bg-white shadow-xl border-4 border-green-500 
+                       text-green-500 text-3xl flex items-center justify-center active:scale-90">
                 ❤
             </button>
+
         </div>
 
     </div>
 </div>
 
+<!-- MATCH POPUP -->
+<div id="matchPopup" 
+     class="fixed inset-0 bg-black/70 backdrop-blur-md hidden items-center justify-center z-[9999]">
 
-<!-- FILTER MODAL -->
-<div id="filtersModal" class="fixed inset-0 hidden items-center justify-center z-50">
-    <div class="absolute inset-0 bg-black/50" id="filtersBackdrop"></div>
+    <div class="bg-white rounded-3xl p-6 w-[90%] max-w-sm text-center shadow-2xl animate-scaleIn">
 
-    <div class="relative bg-white rounded-2xl p-6 w-full max-w-lg shadow-2xl">
-        <h3 class="text-xl font-bold mb-4">Filters</h3>
+        <h1 class="text-4xl font-bold text-pink-600 mb-3">❤️ It's a Match!</h1>
+        <p class="text-gray-600 mb-4 text-lg">You both liked each other!</p>
 
-        <form id="filtersForm" class="space-y-4">
+        <div class="flex justify-center gap-4 mb-5">
+            <img id="myPhoto" class="w-20 h-20 rounded-full object-cover shadow-md">
+            <img id="theirPhoto" class="w-20 h-20 rounded-full object-cover shadow-md">
+        </div>
 
-            <div>
-                <label class="block text-sm font-semibold text-gray-700">Gender</label>
-                <select name="gender" class="w-full border rounded-lg p-2">
-                    <option value="">Any</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
-                </select>
-            </div>
+        <button id="messageBtn"
+            class="block w-full bg-pink-600 text-white py-3 rounded-xl font-bold text-lg mb-3">
+            Send Message
+        </button>
 
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="text-sm font-semibold">Min Age</label>
-                    <input type="number" name="min_age" class="w-full border rounded-lg p-2" placeholder="18">
-                </div>
-                <div>
-                    <label class="text-sm font-semibold">Max Age</label>
-                    <input type="number" name="max_age" class="w-full border rounded-lg p-2" placeholder="60">
-                </div>
-            </div>
+        <button id="continueBtn"
+            class="block w-full bg-gray-200 text-gray-800 py-3 rounded-xl font-bold text-lg">
+            Keep Swiping
+        </button>
 
-            <div>
-                <label class="text-sm font-semibold">City</label>
-                <input type="text" name="city" class="w-full border rounded-lg p-2" placeholder="City name">
-            </div>
-
-            <div class="flex justify-end gap-3">
-                <button type="button" id="clearFilters"
-                        class="px-4 py-2 bg-gray-200 rounded-lg">
-                    Clear
-                </button>
-                <button type="submit"
-                        class="px-5 py-2 bg-pink-600 text-white rounded-lg font-semibold">
-                    Apply
-                </button>
-            </div>
-
-        </form>
     </div>
 </div>
 
+<!-- PROFILE VIEW MODAL -->
+<div id="profileModal"
+     class="fixed inset-0 bg-black/70 backdrop-blur-md hidden items-center justify-center z-[99999]">
 
+    <div class="bg-white p-6 rounded-3xl w-[90%] max-w-md">
+        <img id="profileModalPhoto" class="w-full h-64 object-cover rounded-2xl mb-4">
+        <h2 id="profileModalName" class="text-2xl font-bold mb-2"></h2>
+        <p id="profileModalBio" class="text-gray-600"></p>
+
+        <button onclick="closeProfileModal()"
+            class="mt-5 w-full bg-pink-600 text-white py-3 rounded-xl">Close</button>
+    </div>
+</div>
+
+<style>
+/*** Animations ***/
+@keyframes scaleIn {
+    0% { transform: scale(0.5); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+.animate-scaleIn { animation: scaleIn 0.4s ease-out; }
+
+@keyframes shakeAnim {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(8deg); }
+    50% { transform: rotate(-8deg); }
+    75% { transform: rotate(5deg); }
+    100% { transform: rotate(0deg); }
+}
+.shake { animation: shakeAnim 0.3s; }
+
+@keyframes floatUp {
+    from { transform: translate(-50%, 20px); opacity: 0; }
+    to { transform: translate(-50%, -80px); opacity: 1; }
+}
+.floating-emoji {
+    position: absolute;
+    font-size: 40px;
+    animation: floatUp 1s ease-out forwards;
+    left: 50%;
+    top: 50%;
+}
+
+/*** Heart Burst ***/
+.heart-burst {
+    position: absolute;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 80px;
+    animation: burst 0.6s ease-out forwards;
+    pointer-events: none;
+}
+@keyframes burst {
+    0% { transform: scale(0.2); opacity: 0; }
+    100% { transform: scale(1.2); opacity: 1; }
+}
+
+/*** Touch Optimization ***/
+.touching { transition: none !important; }
+</style>
 
 @endsection
 
-@section('scripts')
+
+
+@push('scripts')
 <script>
-const CSRF = document.querySelector('meta[name="csrf-token"]').content;
-
-let stack = [];
-let history = [];
-let filters = {};
-let loading = false;
-
+const CSRF_TOKEN = document.querySelector('meta[name="csrf-token"]').content;
 const cardArea = document.getElementById('card-area');
 const noMore = document.getElementById('no-more');
 
+let stack = [];
+let lastSwipedCard = null;
 
-// CREATE CARD UI
+/* -------------------------
+    CREATE CARD
+--------------------------- */
 function createCard(user) {
-
     const card = document.createElement('div');
-    card.className =
-        "swipe-card absolute inset-x-0 mx-auto top-0 w-[320px] md:w-[380px] h-[520px] md:h-[600px] rounded-3xl overflow-hidden shadow-2xl bg-white transform transition";
+    card.className = `
+        swipe-card absolute top-0 left-0 w-full h-full 
+        bg-white rounded-3xl shadow-2xl overflow-hidden 
+        transition-transform duration-300 ease-out
+    `;
+
+    card.style.position = "absolute";
+    card.style.inset = "0";
+    card.style.zIndex = stack.length + 1;
+    card.style.transform = `scale(${1 - stack.length * 0.02}) translateY(${stack.length * 12}px)`;
 
     card.__user = user;
 
+    const photo = user.profile?.profile_photo ? `/storage/${user.profile.profile_photo}` : `/images/placeholder.png`;
+    const age = user.profile?.age ?? "";
+    const city = user.profile?.city ?? "";
+    const bio = user.profile?.bio ?? "";
+
     card.innerHTML = `
-        <div class="h-[65%] bg-gray-300 relative">
-            <img src="${user.profile?.profile_photo ? '/storage/' + user.profile.profile_photo : '/images/default.png'}"
-                 class="w-full h-full object-cover">
+        <img src="${photo}" class="w-full h-72 object-cover rounded-t-3xl">
 
-            <div class="absolute left-4 top-4 bg-green-500 text-white px-3 py-1 text-lg font-bold rounded-lg opacity-0 like-label">LIKE</div>
-            <div class="absolute right-4 top-4 bg-red-500 text-white px-3 py-1 text-lg font-bold rounded-lg opacity-0 nope-label">NOPE</div>
-        </div>
-
-        <div class="p-4">
-            <h3 class="text-xl font-bold">${user.name}</h3>
-            <p class="text-gray-600">${user.profile?.age ?? '—'} yrs • ${user.profile?.city ?? 'Unknown'}</p>
-            <p class="text-gray-700 mt-3">${user.profile?.bio?.slice(0, 120) ?? ''}</p>
+        <div class="p-5">
+            <h2 class="text-xl font-bold">${user.name}</h2>
+            <p class="text-gray-500">${age} • ${city}</p>
+            <p class="mt-3 text-gray-700">${bio}</p>
         </div>
     `;
 
-    addSwipeEvents(card);
+    // Tap to open profile full screen
+    card.onclick = () => openProfileModal(user);
+
+    addGesture(card);
     return card;
 }
 
 
 
-// SWIPE GESTURES
-function addSwipeEvents(card) {
+/* -------------------------
+      GESTURE CONTROL
+--------------------------- */
+function addGesture(card) {
+    let startX = 0, currentX = 0, isDragging = false;
 
-    let startX = 0, currentX = 0, dragging = false;
+    card.addEventListener('mousedown', start);
+    card.addEventListener('touchstart', start, { passive: true });
 
-    card.addEventListener('mousedown', e => {
-        dragging = true;
-        startX = e.clientX;
-        card.style.transition = 'none';
-    });
+    function start(e) {
+        isDragging = true;
+        startX = (e.touches ? e.touches[0].clientX : e.clientX);
+        card.style.transition = "none";
+        card.classList.add("touching");
 
-    window.addEventListener('mousemove', e => {
-        if (!dragging) return;
-        currentX = e.clientX;
+        window.addEventListener('mousemove', move);
+        window.addEventListener('mouseup', end);
 
-        let dx = currentX - startX;
-        card.style.transform = `translateX(${dx}px) rotate(${dx / 15}deg)`;
+        window.addEventListener('touchmove', move, { passive: false });
+        window.addEventListener('touchend', end);
+    }
 
-        let likeLabel = card.querySelector('.like-label');
-        let nopeLabel = card.querySelector('.nope-label');
+    function move(e) {
+        if (!isDragging) return;
+        currentX = (e.touches ? e.touches[0].clientX : e.clientX);
+        const dx = currentX - startX;
 
-        let opacity = Math.min(Math.abs(dx) / 120, 1);
+        let angle = Math.max(-15, Math.min(15, dx / 12));
+        card.style.transform = `translate3d(${dx}px, 0, 0) rotate(${angle}deg)`;
+    }
 
-        if (dx > 0) {
-            likeLabel.style.opacity = opacity;
-            nopeLabel.style.opacity = 0;
-        } else {
-            likeLabel.style.opacity = 0;
-            nopeLabel.style.opacity = opacity;
+    function end() {
+        isDragging = false;
+        card.classList.remove("touching");
+
+        const dx = currentX - startX;
+        let velocity = dx / 200;
+
+        if (velocity > 1.5) return swipeAction("like", card.__user, card);
+        if (velocity < -1.5) return swipeAction("dislike", card.__user, card);
+
+        if (dx > 120) swipeAction("like", card.__user, card);
+        else if (dx < -120) swipeAction("dislike", card.__user, card);
+        else {
+            card.style.transform = "translate3d(0,0,0) rotate(0deg) scale(1.02)";
+            setTimeout(() => {
+                card.style.transform = "translate3d(0,0,0) rotate(0deg) scale(1)";
+            }, 150);
         }
-    });
 
-    window.addEventListener('mouseup', () => {
-        if (!dragging) return;
-        dragging = false;
-
-        let dx = currentX - startX;
-
-        if (dx > 120) {
-            animateSwipe(card, 'right');
-        } else if (dx < -120) {
-            animateSwipe(card, 'left');
-        } else {
-            card.style.transition = '0.25s';
-            card.style.transform = '';
-            card.querySelector('.like-label').style.opacity = 0;
-            card.querySelector('.nope-label').style.opacity = 0;
-        }
-    });
+        window.removeEventListener('mousemove', move);
+        window.removeEventListener('mouseup', end);
+    }
 }
 
 
 
-// SWIPE ANIMATION + ACTION
-function animateSwipe(card, direction) {
+/* -------------------------
+        SWIPE ACTION
+--------------------------- */
+async function swipeAction(type, user, card) {
 
-    card.style.transition = '0.4s';
+    lastSwipedCard = user;
 
-    let x = direction === 'right' ? 600 : -600;
-    card.style.transform = `translateX(${x}px) rotate(${direction === 'right' ? 25 : -25}deg)`;
+    if (type === "like") {
+        let heart = document.createElement("div");
+        heart.className = "heart-burst";
+        heart.innerHTML = "❤️";
+        card.appendChild(heart);
+    }
+
+    if (type === "dislike") card.classList.add("shake");
+
+    let emoji = document.createElement("div");
+    emoji.className = "floating-emoji";
+    emoji.innerText = type === "like" ? "😍" : "💔";
+    card.appendChild(emoji);
+
+    card.style.transform =
+        type === "like" ? "translateX(500px) rotate(30deg)"
+                        : "translateX(-500px) rotate(-30deg)";
 
     setTimeout(() => {
         card.remove();
-        handleSwipe(direction === 'right' ? "like" : "dislike", card.__user);
-    }, 250);
-}
+        loadNext();
+    }, 300);
 
-
-
-// HANDLE LIKE / DISLIKE
-async function handleSwipe(type, user) {
-
-    await fetch("{{ route('swipe.action') }}", {
+    let res = await fetch("{{ route('swipe.action') }}", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "X-CSRF-TOKEN": CSRF
+            "X-CSRF-TOKEN": CSRF_TOKEN
         },
         body: JSON.stringify({
             target_id: user.id,
@@ -243,23 +286,68 @@ async function handleSwipe(type, user) {
         })
     });
 
-    history.push({ type, user });
+    let result = await res.json();
 
-    loadNextCard();
+    if (result.match === true && type === "like") {
+        showMatchPopup(user);
+    }
 }
 
 
 
-// LOAD NEXT CARD
-async function loadNextCard() {
+/* -------------------------
+       MATCH POPUP
+--------------------------- */
+function showMatchPopup(user) {
+    let popup = document.getElementById("matchPopup");
 
-    const query = new URLSearchParams(filters).toString();
+    document.getElementById("myPhoto").src =
+        "{{ auth()->user()->profile && auth()->user()->profile->profile_photo
+            ? '/storage/' . auth()->user()->profile->profile_photo
+            : '/images/placeholder.png' }}";
 
-    const res = await fetch("{{ route('swipe.next') }}?" + query);
+    document.getElementById("theirPhoto").src =
+        user.profile?.profile_photo ? "/storage/" + user.profile.profile_photo : "/images/placeholder.png";
+
+    popup.classList.remove("hidden");
+}
+
+document.getElementById("continueBtn").onclick = () =>
+    document.getElementById("matchPopup").classList.add("hidden");
+
+document.getElementById("messageBtn").onclick = () =>
+    window.location.href = "/matches";
+
+
+
+/* -------------------------
+       PROFILE MODAL
+--------------------------- */
+function openProfileModal(user) {
+    document.getElementById("profileModalPhoto").src =
+        user.profile?.profile_photo ? "/storage/" + user.profile.profile_photo : "/images/placeholder.png";
+
+    document.getElementById("profileModalName").innerText = user.name;
+    document.getElementById("profileModalBio").innerText = user.profile?.bio ?? "";
+
+    document.getElementById("profileModal").classList.remove("hidden");
+}
+
+function closeProfileModal() {
+    document.getElementById("profileModal").classList.add("hidden");
+}
+
+
+
+/* -------------------------
+       LOAD NEXT CARD
+--------------------------- */
+async function loadNext() {
+    const res = await fetch("{{ route('swipe.next') }}");
     const data = await res.json();
 
     if (!data.user) {
-        if (stack.length === 0) noMore.classList.remove('hidden');
+        noMore.classList.remove("hidden");
         return;
     }
 
@@ -268,57 +356,40 @@ async function loadNextCard() {
     stack.push(card);
 }
 
-
-
-// INIT — LOAD FIRST CARDS
-loadNextCard();
-loadNextCard();
-loadNextCard();
+for (let i = 0; i < 10; i++) loadNext();
 
 
 
-// BUTTON EVENTS
-document.getElementById('likeBtn').onclick = () => {
-    if (stack.length === 0) return;
-    let card = stack.pop();
-    animateSwipe(card, 'right');
+/* -------------------------
+          BUTTONS
+--------------------------- */
+document.getElementById("likeBtn").onclick = () => {
+    if (stack.length) {
+        let card = stack.pop();
+        swipeAction("like", card.__user, card);
+    }
 };
 
-document.getElementById('dislikeBtn').onclick = () => {
-    if (stack.length === 0) return;
-    let card = stack.pop();
-    animateSwipe(card, 'left');
+document.getElementById("dislikeBtn").onclick = () => {
+    if (stack.length) {
+        let card = stack.pop();
+        swipeAction("dislike", card.__user, card);
+    }
 };
 
-
-
-// FILTER MODAL
-document.getElementById('openFilters').onclick = () =>
-    document.getElementById('filtersModal').classList.remove('hidden');
-
-document.getElementById('filtersBackdrop').onclick = () =>
-    document.getElementById('filtersModal').classList.add('hidden');
-
-document.getElementById('filtersForm').onsubmit = e => {
-    e.preventDefault();
-
-    filters = Object.fromEntries(new FormData(e.target).entries());
-
-    document.getElementById('filtersModal').classList.add('hidden');
-
-    cardArea.innerHTML = "";
-    stack = [];
-    noMore.classList.add('hidden');
-
-    loadNextCard();
-    loadNextCard();
-    loadNextCard();
+document.getElementById("superLikeBtn").onclick = () => {
+    if (stack.length) {
+        let card = stack.pop();
+        swipeAction("superlike", card.__user, card);
+    }
 };
 
-document.getElementById('clearFilters').onclick = () => {
-    filters = {};
-    document.getElementById('filtersForm').reset();
+document.getElementById("undoBtn").onclick = () => {
+    if (!lastSwipedCard) return;
+    const card = createCard(lastSwipedCard);
+    cardArea.appendChild(card);
+    stack.push(card);
+    lastSwipedCard = null;
 };
-
 </script>
-@endsection
+@endpush

@@ -47,7 +47,19 @@ class User extends Authenticatable
     }
 
     public function profile()
-    {
+{
     return $this->hasOne(Profile::class);
-    }
+}
+
+public function swipesFrom()
+{
+    return $this->hasMany(Swipe::class, 'user_id'); // YOU swiped someone
+}
+
+public function swipesTo()
+{
+    return $this->hasMany(Swipe::class, 'target_id'); // Someone swiped YOU
+}
+
+
 }
